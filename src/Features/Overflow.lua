@@ -224,7 +224,15 @@ function Overflow.updateBoundary(alignment)
 	-- The default boundary is the point where both the left-most-right-icon
 	-- and left-most-right-icon meet OR the opposite side of the screen
 	local oppositeAlignment = (alignment == "Left" and "Right") or "Left"
-	local oppositeOrderedIcons = Overflow.updateAvailableIcons(oppositeAlignment)
+	-- Icons inside an overflow menu no longer occupy the topbar, so they must
+	-- not shrink the boundary of this alignment
+	local oppositeOrderedIcons = {}
+	for _, oppositeIcon in ipairs(Overflow.updateAvailableIcons(oppositeAlignment)) do
+		local oppositeParentUID = oppositeIcon.parentIconUID
+		if not (oppositeParentUID and overflowIconUIDs[oppositeParentUID]) then
+			table.insert(oppositeOrderedIcons, oppositeIcon)
+		end
+	end
 	local nearestOppositeIcon = (isLeft and oppositeOrderedIcons[1]) or (isRight and oppositeOrderedIcons[#oppositeOrderedIcons])
 	local oppositeOverflowIcon = overflowIcons[oppositeAlignment]
 	local boundary = (isLeft and holderXPos + holderXSize) or holderXPos
@@ -303,7 +311,7 @@ function Overflow.updateBoundary(alignment)
 		local menu = overflowIcon:getInstance("Menu")
 		local holderXEndPos = holderXPos + holderXSize
 		local menuWidth = holderXSize
-		if menu and oppositeOverflowIcon then
+		if menu and oppositeOverflowIcon and oppositeOverflowIcon.isEnabled then
 			local oppositeWidget = oppositeOverflowIcon.widget
 			local oppositeXPos = oppositeWidget.AbsolutePosition.X
 			local oppositeXSize = Overflow.getWidth(oppositeOverflowIcon)
@@ -318,8 +326,10 @@ function Overflow.updateBoundary(alignment)
 					menuBoundary = oppositeBoundary
 				end
 			end
-			menuWidth = (isLeft and menuBoundary - holderXPos) or (holderXEndPos - menuBoundary)
 		end
+		-- The opposite overflow may be hidden while its icons stay on the topbar,
+		-- therefore limit this menu to the boundary instead of a stale position
+		menuWidth = (isLeft and menuBoundary - holderXPos) or (holderXEndPos - menuBoundary)
 		local currentMaxWidth = menu and menu:GetAttribute("MaxWidth")
 		menuWidth = Utility.round(menuWidth)
 		if menu and currentMaxWidth ~= menuWidth then
