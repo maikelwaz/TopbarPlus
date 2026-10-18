@@ -1,0 +1,23 @@
+name = "maikelwaz/topbarplus"
+version = "3.5.0"
+description = "Construct dynamic and intuitive topbar icons. Enhance the appearance and behaviour of these icons with features such as themes, dropdowns and menus."
+license = "MPL-2.0"
+authors = ["ForeverHD", "Maikel Waz"]
+repository = "https://github.com/maikelwaz/TopbarPlus"
+includes = [
+    "pesde.toml",
+    "LICENSE",
+    "README.md",
+    "src/**",
+]
+
+[indices]
+default = "https://github.com/pesde-pkg/index"
+
+[target]
+environment = "roblox"
+lib = "src/init.lua"
+build_files = ["src"]
+
+[scripts]
+bump = "scripts/bump_version.luau"

@@ -7,6 +7,9 @@
 # Rojo
 sourcemap.json
 
+# pesde
+/package.tar.gz
+
 # Built documentation
 /site
 

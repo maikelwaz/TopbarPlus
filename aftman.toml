@@ -3,6 +3,7 @@
 
 # To add a new tool, add an entry to this table.
 [tools]
+pesde = "pesde-pkg/pesde@0.7.4+registry.0.2.3"
 rojo = "rojo-rbx/rojo@7.4.1"
 selene = "Kampfkarren/selene@0.28.0"
 stylua = "JohnnyMorganz/StyLua@0.20.0"
